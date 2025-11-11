@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartTourAI | Plan Smarter Trips</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+/* ========= GLOBAL ========= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #f5f8ff;
+  color: #333;
+  overflow-x: hidden;
+}
+
+/* ========= HEADER ========= */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 60px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+/* Logo on left */
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0077b6, #00b4d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+/* Centered navigation links */
+.center-nav {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  flex: 1;
+}
+
+.center-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.center-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #0077b6, #00b4d8);
+  transition: width 0.3s ease;
+}
+
+.center-nav a:hover {
+  color: #0077b6;
+}
+
+.center-nav a:hover::after {
+  width: 100%;
+}
+
+/* Right-side auth buttons */
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-login {
+  background: transparent;
+  color: #0077b6;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid #0077b6;
+  transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+  background: #0077b6;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 119, 182, 0.3);
+}
+
+.btn-signup {
+  background: linear-gradient(135deg, #00b4d8, #0096c7);
+  color: white;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+}
+
+.btn-signup:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+}
+
+/* ========= HERO ========= */
+.hero {
+  background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') center/cover no-repeat;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 60, 100, 0.6);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 20px;
+  animation: fadeInUp 1s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.hero p {
+  font-size: 1.3rem;
+  color: #e2e8f0;
+  margin-bottom: 35px;
+  line-height: 1.6;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 14px 32px;
+  border: none;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 1.05rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid white;
+  color: white;
+}
+
+.btn-outline:hover {
+  background: white;
+  color: #0077b6;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ffb703, #fb8500);
+  color: white;
+  box-shadow: 0 8px 20px rgba(251, 133, 0, 0.4);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #fb8500, #ffb703);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(251, 133, 0, 0.5);
+}
+
+.trust {
+  margin-top: 40px;
+  color: #dbeafe;
+  font-size: 1.1rem;
+}
+
+/* ========= WHY CHOOSE ========= */
+.why {
+  text-align: center;
+  padding: 100px 60px;
+  background: linear-gradient(180deg, #e0f7fa 0%, #ffffff 100%);
+  position: relative;
+}
+
+.why h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.why h2 span {
+  background: linear-gradient(135deg, #0077b6, #00b4d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.feature {
+  background: white;
+  border-radius: 20px;
+  width: 300px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #00b4d8, #0096c7);
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.feature:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 150, 199, 0.2);
+}
+
+.feature:hover::before {
+  transform: scaleX(1);
+}
+
+.feature i {
+  font-size: 3rem;
+  background: linear-gradient(135deg, #00b4d8, #0096c7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.feature h3 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  color: #0077b6;
+}
+
+/* ========= HOW IT WORKS ========= */
+.how {
+  background: white;
+  text-align: center;
+  padding: 100px 60px;
+}
+
+.how h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.steps {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  margin-top: 60px;
+}
+
+.step {
+  width: 280px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 20px;
+  padding: 35px 25px;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.step:hover {
+  background: linear-gradient(135deg, #caf0f8 0%, #ade8f4 100%);
+  transform: scale(1.05);
+}
+
+.number {
+  display: inline-block;
+  background: linear-gradient(135deg, #00b4d8, #0096c7);
+  color: white;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0, 180, 216, 0.3);
+}
+
+.step h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #0077b6;
+}
+
+/* ========= TESTIMONIALS ========= */
+.testimonials {
+  background: #ffffff;
+  color: #333;
+  text-align: center;
+  padding: 100px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonials h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: #0077b6;
+}
+
+.testimonials-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 60px;
+}
+
+.reviews {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 50px;
+  position: relative;
+  z-index: 1;
+}
+
+.review {
+  background: white;
+  padding: 0;
+  border-radius: 20px;
+  width: 380px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s ease;
+  overflow: hidden;
+  text-align: left;
+}
+
+.review:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 50px rgba(0, 119, 182, 0.2);
+}
+
+.review-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.review-content {
+  padding: 30px;
+}
+
+.review-stars {
+  color: #ffb703;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.review p {
+  line-height: 1.8;
+  margin-bottom: 20px;
+  color: #555;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.author-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #00b4d8;
+}
+
+.author-info h4 {
+  font-weight: 600;
+  font-style: normal;
+  color: #0077b6;
+  margin-bottom: 3px;
+  font-size: 1rem;
+}
+
+.author-info p {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+  font-style: normal;
+}
+
+/* ========= CTA ========= */
+.cta {
+  background: linear-gradient(135deg, rgba(2, 62, 138, 0.85), rgba(0, 119, 182, 0.85)),
+              url('https://images.unsplash.com/photo-1488646953014-85cb44e25828') center/cover no-repeat;
+  color: white;
+  text-align: center;
+  padding: 100px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 0;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cta h2 {
+  font-size: 2.8rem;
+  margin-bottom: 25px;
+  line-height: 1.3;
+}
+
+.cta p {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  color: #dbeafe;
+  line-height: 1.6;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-cta-login {
+  background: transparent;
+  color: white;
+  padding: 14px 35px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid white;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.btn-cta-login:hover {
+  background: white;
+  color: #0077b6;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+}
+
+.btn-cta-signup {
+  background: linear-gradient(135deg, #ffb703, #fb8500);
+  color: white;
+  padding: 14px 35px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  box-shadow: 0 8px 20px rgba(251, 133, 0, 0.4);
+}
+
+.btn-cta-signup:hover {
+  background: linear-gradient(135deg, #fb8500, #ffb703);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(251, 133, 0, 0.5);
+}
+
+/* ========= FOOTER ========= */
+footer {
+  background: #111827;
+  color: #d1d5db;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.footer-links {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: #d1d5db;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: white;
+}
+
+/* ========= RESPONSIVE ========= */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 30px;
+  }
+
+  .center-nav {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+    white-space: normal;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+  }
+
+  .why h2, .how h2, .testimonials h2, .cta h2 {
+    font-size: 2rem;
+  }
+
+  .features, .steps, .reviews {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn-cta-login, .btn-cta-signup {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="logo">🌍 SmartTourAI</div>
+    
+    <nav class="center-nav">
+      <a href="#">Home</a>
+      <a href="#">Explore</a>
+      <a href="#">Discover</a>
+      <a href="#">Pricing</a>
+      <a href="#">About</a>
+    </nav>
+
+    <div class="auth-buttons">
+      <a href="login.html" class="btn-login">Login</a>
+      <a href="signup.html" class="btn-signup">Sign Up</a>
+    </div>
+  </header>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Plan Smarter Trips with AI ✈️</h1>
+      <p>Your personal travel assistant that understands your style and finds the perfect timing for unforgettable adventures.</p>
+      <div class="buttons">
+        <a href="#" class="btn btn-outline">▶ Watch Demo</a>
+        <a href="#" class="btn btn-primary">🚀 Get Started</a>
+      </div>
+      <p class="trust">🌟 Trusted by <strong>50,000+</strong> travelers worldwide</p>
+    </div>
+  </section>
+
+  <!-- ===== WHY CHOOSE ===== -->
+  <section class="why">
+    <h2>Why Choose <span>SmartTourAI?</span></h2>
+    <div class="features">
+      <div class="feature">
+        <i>🧠</i>
+        <h3>AI Planning</h3>
+        <p>Get personalized itineraries powered by cutting-edge AI technology tailored to your preferences.</p>
+      </div>
+      <div class="feature">
+        <i>⏰</i>
+        <h3>Smart Timing</h3>
+        <p>Optimize your schedule for the best travel experience with intelligent time management.</p>
+      </div>
+      <div class="feature">
+        <i>📍</i>
+        <h3>Real-time Updates</h3>
+        <p>Stay informed with live travel and weather information throughout your journey.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="number">1</span>
+        <h3>Set Preferences</h3>
+        <p>Tell us your travel style, interests, and budget to get started.</p>
+      </div>
+      <div class="step">
+        <span class="number">2</span>
+        <h3>Get Recommendations</h3>
+        <p>Receive personalized itineraries and suggestions tailored just for you.</p>
+      </div>
+      <div class="step">
+        <span class="number">3</span>
+        <h3>Plan & Travel</h3>
+        <p>Refine your plan and enjoy your seamless, stress-free journey.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="testimonials">
+    <h2>What Our Users Say</h2>
+    <p class="testimonials-subtitle">Real stories from travelers who transformed their trips with SmartTourAI</p>
+    <div class="reviews">
+      <div class="review">
+        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34" alt="Paris Travel" class="review-image">
+        <div class="review-content">
+          <div class="review-stars">⭐⭐⭐⭐⭐</div>
+          <p>"SmartTourAI planned my entire Paris trip perfectly! From hidden cafes to the best times to visit the Eiffel Tower. I discovered places I never would have found on my own. Absolutely game-changing!"</p>
+          <div class="review-author">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" alt="Jane Doe" class="author-avatar">
+            <div class="author-info">
+              <h4>Sarah Mitchell</h4>
+              <p>Paris, France • Solo Traveler</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="review">
+        <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21" alt="Bali Travel" class="review-image">
+        <div class="review-content">
+          <div class="review-stars">⭐⭐⭐⭐⭐</div>
+          <p>"Our family trip to Bali was seamless thanks to SmartTourAI. The recommendations were spot on for traveling with kids. It saved us so much time and stress. Every suggestion was perfect!"</p>
+          <div class="review-author">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e" alt="John Smith" class="author-avatar">
+            <div class="author-info">
+              <h4>Michael Chen</h4>
+              <p>Bali, Indonesia • Family Trip</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="review">
+        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c" alt="Dubai Travel" class="review-image">
+        <div class="review-content">
+          <div class="review-stars">⭐⭐⭐⭐⭐</div>
+          <p>"The AI understood exactly what we wanted for our honeymoon in Dubai. Perfect balance of adventure and relaxation. Real-time updates kept us informed throughout. Worth every penny!"</p>
+          <div class="review-author">
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80" alt="Emily" class="author-avatar">
+            <div class="author-info">
+              <h4>Emily Rodriguez</h4>
+              <p>Dubai, UAE • Honeymoon</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CALL TO ACTION ===== -->
+  <section class="cta">
+    <div class="cta-content">
+      <h2>Ready to Plan Your Perfect Trip?</h2>
+      <p>Join thousands of travelers who trust SmartTourAI for seamless travel planning. Start your journey today!</p>
+      <div class="cta-buttons">
+        <a href="login.html" class="btn-cta-login">Login</a>
+        <a href="signup.html" class="btn-cta-signup">Sign Up Free</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>© 2025 SmartTourAI. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </footer>
+</body>
+</html>
